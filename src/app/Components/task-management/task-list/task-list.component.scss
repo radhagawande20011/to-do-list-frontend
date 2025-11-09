@@ -1,0 +1,46 @@
+.slds-scope {
+  font-family: 'Salesforce Sans', Arial, sans-serif;
+}
+
+.slds-page-header {
+  padding: 1rem;
+  background-color: white;
+}
+
+.slds-card__footer button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.slds-dropdown {
+  position: absolute;
+  z-index: 7000;
+  left: auto;
+  right: 0;
+  top: 100%;
+  margin-top: 0.125rem;
+  min-width: 8rem;
+}
+
+.slds-dropdown__list {
+  list-style: none;
+  padding: 0.25rem 0;
+  margin: 0;
+}
+
+.slds-dropdown__item a {
+  display: block;
+  padding: 0.5rem 1rem;
+  text-decoration: none;
+  color: #080707;
+  white-space: nowrap;
+}
+
+.slds-dropdown__item a:hover {
+  background-color: #f3f2f2;
+}
+
+.slds-dropdown-trigger {
+  position: relative;
+}
+

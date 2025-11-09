@@ -1,0 +1,180 @@
+<div class="slds-scope">
+  <div class="slds-card" style="margin: 2rem; max-width: 1200px; margin-left: auto; margin-right: auto;">
+    <div class="slds-page-header">
+      <div class="slds-page-header__row">
+        <div class="slds-page-header__col-title">
+          <div class="slds-media">
+            <div class="slds-media__figure">
+              <span class="slds-icon_container slds-icon-standard-task" style="background-color: #c23934;">
+                <svg class="slds-icon slds-page-header__icon" aria-hidden="true">
+                  <use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#task"></use>
+                </svg>
+              </span>
+            </div>
+            <div class="slds-media__body">
+              <div class="slds-page-header__name">
+                <div class="slds-page-header__name-title">
+                  <h1>
+                    <span class="slds-page-header__title slds-truncate" title="Tasks">Tasks</span>
+                  </h1>
+                </div>
+              </div>
+              <p class="slds-page-header__name-meta">All Tasks</p>
+              <p class="slds-text-body_small">{{ totalCount }} records</p>
+            </div>
+          </div>
+        </div>
+        <div class="slds-page-header__col-actions">
+          <div class="slds-page-header__controls">
+            <div class="slds-page-header__control">
+              <button class="slds-button slds-button_neutral" (click)="openAddTaskModal()"
+                style="background-color: #f4e6a8; border-color: #f4e6a8;">New Task</button>
+            </div>
+            <div class="slds-page-header__control">
+              <button class="slds-button slds-button_neutral" (click)="refresh()">Refresh</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slds-page-header__row slds-page-header__row_gutters" style="margin-top: 1rem;">
+        <div class="slds-page-header__col-details">
+          <div class="slds-form-element">
+            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+              <!-- <svg class="slds-icon slds-input__icon slds-input__icon_right slds-icon-text-default" aria-hidden="true">
+                <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#search"></use>
+              </svg> -->
+              <input type="text" class="slds-input" placeholder="Search" [(ngModel)]="searchTerm"
+                (keyup.enter)="onSearch()" style="max-width: 300px;" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+      <thead>
+        <tr class="slds-line-height_reset">
+          <th class="slds-text-align_center" scope="col" style="width: 3.25rem;">
+            <div class="slds-th__action slds-th__action_form">
+              <span class="slds-checkbox">
+                <input type="checkbox" />
+                <label class="slds-checkbox__label">
+                  <span class="slds-checkbox_faux"></span>
+                </label>
+              </span>
+            </div>
+          </th>
+          <th scope="col">
+            <div class="slds-truncate" title="Assigned To">Assigned To</div>
+          </th>
+          <th scope="col">
+            <div class="slds-truncate" title="Status">Status</div>
+          </th>
+          <th scope="col">
+            <div class="slds-truncate" title="Due Date">Due Date</div>
+          </th>
+          <th scope="col">
+            <div class="slds-truncate" title="Priority">Priority</div>
+          </th>
+          <th scope="col">
+            <div class="slds-truncate" title="Comments">Comments</div>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let task of tasks" class="slds-hint-parent">
+          <td class="slds-text-align_center" role="gridcell">
+            <span class="slds-checkbox">
+              <input type="checkbox" />
+              <label class="slds-checkbox__label">
+                <span class="slds-checkbox_faux"></span>
+              </label>
+            </span>
+          </td>
+          <td data-label="Assigned To">
+            <div class="slds-truncate">
+              <a href="javascript:void(0);" style="color: #0176d3;">{{ task?.assignedTo }}</a>
+            </div>
+          </td>
+          <td data-label="Status">
+            <div class="slds-truncate"
+              [style.color]="task.status === 'Completed' ? '#4bca81' : task?.status === 'In Progress' ? '#0176d3' : '#706e6b'">
+              {{ task?.status }}
+            </div>
+          </td>
+          <td data-label="Due Date">
+            <div class="slds-truncate">{{ task.dueDate | date: 'dd/MM/yyyy' }}</div>
+          </td>
+          <td data-label="Priority">
+            <div class="slds-truncate"
+              [style.color]="task.priority === 'High' ? '#c23934' : task.priority === 'Low' ? '#706e6b' : '#3e3e3c'">
+              {{ task.priority }}
+            </div>
+          </td>
+          <td data-label="Comments">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div class="slds-truncate">{{ task.comments }}</div>
+              <div class="slds-dropdown-trigger slds-dropdown-trigger_click"
+                [class.slds-is-open]="actionMenuTaskId === task.id">
+                <button class="slds-button slds-button_icon slds-button_icon-border-filled"
+                  (click)="toggleActionMenu(task.id!)" aria-haspopup="true">
+                  <!-- <svg class="slds-button__icon" aria-hidden="true">
+                    <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#down"></use>
+                  </svg> -->
+                </button>
+                <div class="slds-dropdown slds-dropdown_right" *ngIf="actionMenuTaskId === task.id"
+                  style="background-color: #f4e6a8;">
+                  <ul class="slds-dropdown__list" role="menu">
+                    <li class="slds-dropdown__item" role="presentation">
+                      <a href="javascript:void(0);" role="menuitem" (click)="openEditModal(task)">
+                        <span class="slds-truncate" title="Edit">Edit</span>
+                      </a>
+                    </li>
+                    <li class="slds-dropdown__item" role="presentation">
+                      <a href="javascript:void(0);" role="menuitem" (click)="deleteTask(task.id!)">
+                        <span class="slds-truncate" title="Delete">Delete</span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="slds-card__footer"
+      style="display: flex; justify-content: space-between; align-items: center; padding: 1rem;">
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <select class="slds-select" [(ngModel)]="pageSize" (change)="onPageSizeChange()" style="width: 80px;">
+          <option value="10">10</option>
+          <option value="20">20</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+        </select>
+      </div>
+      <div style="display: flex; gap: 0.5rem;">
+        <button class="slds-button slds-button_neutral" (click)="goToFirstPage()" [disabled]="currentPage === 1">
+          First
+        </button>
+        <button class="slds-button slds-button_neutral" (click)="goToPreviousPage()" [disabled]="currentPage === 1">
+          Prev
+        </button>
+        <span class="slds-button slds-button_neutral" style="pointer-events: none;">
+          {{ currentPage }}
+        </span>
+        <button class="slds-button slds-button_neutral" (click)="goToNextPage()" [disabled]="currentPage >= totalPages">
+          Next
+        </button>
+        <button class="slds-button slds-button_neutral" (click)="goToLastPage()" [disabled]="currentPage >= totalPages">
+          Last
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <app-add-task *ngIf="showAddModal || showEditModal" [task]="selectedTask" (save)="onTaskFormSave($event)"
+    (close)="closeModals()"></app-add-task>
+
+  <div *ngIf="showAddModal || showEditModal" class="slds-backdrop slds-backdrop_open"></div>
