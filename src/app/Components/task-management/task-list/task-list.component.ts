@@ -1,23 +1,18 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TaskService } from '../service/task.service'
 import { AddTaskComponent } from '../add-task/add-task.component';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { ITask } from '../model/task.model';
+import { ToastComponent } from 'src/app/theme/shared/toast/toast.component';
+import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
 
-export interface ITask {
-  id?: string;
-  assignedTo: string;
-  status: string;
-  dueDate: string;
-  priority: string;
-  comments: string;
-}
 
 @Component({
   selector: 'app-task-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule, AddTaskComponent],
+  imports: [CommonModule, FormsModule, HttpClientModule, AddTaskComponent, ToastComponent, NgxSkeletonLoaderModule],
   templateUrl: './task-list.component.html',
   styleUrl: './task-list.component.scss',
   providers: [TaskService, HttpClient],
@@ -27,29 +22,91 @@ export class TaskListComponent {
   totalCount: number = 0;
   totalPages: number = 0;
   searchTerm: string = '';
-  pageSize: number = 20;
+  pageSizeOptions: number[] = [10, 20, 50, 100];
+  pageSize: number = 10;
   currentPage: number = 1;
   showAddModal: boolean = false;
   showEditModal: boolean = false;
   selectedTask: ITask | null = null;
+  isLoading: boolean = false;
   actionMenuTaskId: string | null = null;
+  @ViewChild(ToastComponent) toast!: ToastComponent;
+
 
   constructor(private taskService: TaskService) { }
 
   ngOnInit() {
-    this.loadTasks();
-  }
-
-  loadTasks() {
-    this.taskService.getTasks(this.currentPage, this.pageSize).subscribe((response) => {
-      this.tasks = response;
-      this.totalPages = Math.ceil(response.total / this.pageSize);
+    this.getAllTasks();
+    this.taskService.refreshObservable$.subscribe((refresh) => {
+      if (refresh) {
+        this.getAllTasks();
+      }
     });
   }
 
-  async onSearch() {
+  getAllTasks() {
+    this.isLoading = true;
+
+    this.taskService.getTasks(this.currentPage, this.pageSize, this.searchTerm).subscribe({
+      next: (response) => {
+        this.tasks = response.data;
+        this.totalCount = response.total;
+        this.totalPages = Math.ceil(response.total / this.pageSize);
+        this.actionMenuTaskId = null;
+      },
+      error: (err) => {
+        console.error('Error fetching tasks:', err);
+      },
+      complete: () => {
+        this.isLoading = false;
+      }
+    });
+  }
+  onSearch() {
+    if (this.searchTerm.length >= 2 || this.searchTerm.length === 0) {
+      this.currentPage = 1;
+      this.getAllTasks();
+    }
+  }
+
+  clearSearch() {
+    this.searchTerm = '';
     this.currentPage = 1;
-    await this.loadTasks();
+    this.getAllTasks();
+  }
+
+  goToFirstPage() {
+    this.currentPage = 1;
+    this.getAllTasks();
+  }
+
+  goToPreviousPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.getAllTasks();
+    }
+  }
+
+  goToNextPage() {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.getAllTasks();
+    }
+  }
+
+  goToLastPage() {
+    this.currentPage = this.totalPages;
+    this.getAllTasks();
+  }
+
+  onPageSizeChange() {
+    this.currentPage = 1;
+    this.getAllTasks();
+  }
+
+  refresh() {
+    this.searchTerm = '';
+    this.getAllTasks();
   }
 
   openAddTaskModal() {
@@ -57,25 +114,9 @@ export class TaskListComponent {
     this.showAddModal = true;
   }
 
-  closeAddModal() {
-    this.showAddModal = false;
-  }
-
-  async onAddTaskSave(task: ITask) {
-    // const { error } = await this.TaskService.createTask(task);
-
-    // if (error) {
-    //   console.error('Error creating task:', error);
-    //   alert('Error creating task');
-    //   return;
-    // }
-
-    this.closeAddModal();
-    await this.loadTasks();
-  }
-
-  toggleActionMenu(taskId: string) {
-    this.actionMenuTaskId = this.actionMenuTaskId === taskId ? null : taskId;
+  onTaskFormSave(task: ITask) {
+    this.closeModals();
+    this.getAllTasks();
   }
 
   openEditModal(task: ITask) {
@@ -89,61 +130,19 @@ export class TaskListComponent {
     this.selectedTask = null;
   }
 
-  onTaskFormSave(task: ITask) {
+    toggleActionMenu(taskId: string) {
+    this.actionMenuTaskId = this.actionMenuTaskId === taskId ? null : taskId;
   }
 
 
-  async deleteTask(taskId: string) {
+  deleteTask(taskId: string) {
     if (!confirm('Are you sure you want to delete this task?')) {
       return;
     }
-
-    // const { error } = await this.TaskService.deleteTask(taskId);
-
-    // if (error) {
-    //   console.error('Error deleting task:', error);
-    //   alert('Error deleting task');
-    //   return;
-    // }
-
     this.actionMenuTaskId = null;
-    await this.loadTasks();
+    this.getAllTasks();
   }
 
-  async refresh() {
-    await this.loadTasks();
-  }
-
-  // get totalPages(): number {
-  //   return Math.ceil(this.totalCount / this.pageSize);
-  // }
-
-  goToFirstPage() {
-    this.currentPage = 1;
-    this.loadTasks();
-  }
-
-  goToPreviousPage() {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-      this.loadTasks();
-    }
-  }
-
-  goToNextPage() {
-    if (this.currentPage < this.totalPages) {
-      this.currentPage++;
-      this.loadTasks();
-    }
-  }
-
-  goToLastPage() {
-    this.currentPage = this.totalPages;
-    this.loadTasks();
-  }
-
-  onPageSizeChange() {
-    this.currentPage = 1;
-    this.loadTasks();
-  }
 }
+export { ITask };
+
