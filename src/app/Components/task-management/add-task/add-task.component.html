@@ -2,85 +2,103 @@
   <div class="slds-modal__container" style="max-width: 40rem;">
     <header class="slds-modal__header">
       <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" (click)="onClose()">
-                <!-- <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
-                <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
-                </svg> -->
+        <i class="ti ti-x slds-button__icon slds-button__icon_large" style="font-size: 20px;"></i>
+
       </button>
-      <h2 class="slds-modal__title slds-hyphenate">New Task</h2>
+      <h2 class="slds-modal__title slds-hyphenate">{{ task?.id ? 'Update Task' : 'New Task' }}</h2>
+
     </header>
     <div class="slds-modal__content slds-p-around_medium">
-        <form [formGroup]="taskForm">
-      <div class="slds-form" role="list">
-        <div class="slds-form__row">
-          <div class="slds-form__item" role="listitem">
-            <div class="slds-form-element slds-form-element_stacked">
-              <label class="slds-form-element__label" for="assigned-to">
-                <abbr class="slds-required" title="required">* </abbr>Assigned To
-              </label>
-              <div class="slds-form-element__control">
-                <input type="text" id="assigned-to" class="slds-input" formControlName="assignedTo" placeholder="User 1" />
+      <form [formGroup]="taskForm">
+        <div class="slds-form" role="list">
+          <div class="slds-form__row">
+            <div class="slds-form__item" role="listitem">
+              <div class="slds-form-element slds-form-element_stacked">
+                <label class="slds-form-element__label" for="assigned-to">
+                  <abbr class="slds-required" title="required">* </abbr>Assigned To
+                </label>
+                <div class="slds-form-element__control">
+                  <input type="text" id="assigned-to" class="slds-input" formControlName="assignedTo"
+                    placeholder="User 1" />
+                </div>
+                <div class="slds-form-element__help slds-text-color_error"
+                  *ngIf="taskForm.get('assignedTo')?.invalid && taskForm.get('assignedTo')?.touched">
+                  Assigned To is required
+                </div>
+
+              </div>
+            </div>
+            <div class="slds-form__item" role="listitem">
+              <div class="slds-form-element slds-form-element_stacked">
+                <label class="slds-form-element__label" for="status">
+                  <abbr class="slds-required" title="required">* </abbr>Status
+                </label>
+                <div class="slds-form-element__control">
+                  <div class="slds-select_container">
+                    <select class="slds-select" id="status" formControlName="status">
+                      <option value="Not Started">Not Started</option>
+                      <option value="In Progress">In Progress</option>
+                      <option value="Completed">Completed</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="slds-form-element__help slds-text-color_error"
+                  *ngIf="taskForm.get('status')?.invalid && taskForm.get('status')?.touched">
+                  Status is required
+                </div>
+
               </div>
             </div>
           </div>
-          <div class="slds-form__item" role="listitem">
-            <div class="slds-form-element slds-form-element_stacked">
-              <label class="slds-form-element__label" for="status">
-                <abbr class="slds-required" title="required">* </abbr>Status
-              </label>
-              <div class="slds-form-element__control">
-                <div class="slds-select_container">
-                  <select class="slds-select" id="status" formControlName="status">
-                    <option value="Not Started">Not Started</option>
-                    <option value="In Progress">In Progress</option>
-                    <option value="Completed">Completed</option>
-                  </select>
+          <div class="slds-form__row">
+            <div class="slds-form__item" role="listitem">
+              <div class="slds-form-element slds-form-element_stacked">
+                <label class="slds-form-element__label" for="due-date">Due Date</label>
+                <div class="slds-form-element__control">
+                  <input type="date" id="due-date" class="slds-input" formControlName="dueDate" />
+                </div>
+              </div>
+            </div>
+            <div class="slds-form__item" role="listitem">
+              <div class="slds-form-element slds-form-element_stacked">
+                <label class="slds-form-element__label" for="priority">
+                  <abbr class="slds-required" title="required">* </abbr>Priority
+                </label>
+                <div class="slds-form-element__control">
+                  <div class="slds-select_container">
+                    <select class="slds-select" id="priority" formControlName="priority">
+                      <option value="Low">Low</option>
+                      <option value="Normal">Normal</option>
+                      <option value="High">High</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="slds-form-element__help slds-text-color_error"
+                  *ngIf="taskForm.get('priority')?.invalid && taskForm.get('priority')?.touched">
+                  Priority is required
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <div class="slds-form__row">
+            <div class="slds-form__item" role="listitem" style="width: 100%;">
+              <div class="slds-form-element slds-form-element_stacked">
+                <label class="slds-form-element__label" for="description">Description</label>
+                <div class="slds-form-element__control">
+                  <textarea id="description" class="slds-textarea" rows="5" formControlName="comments"></textarea>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="slds-form__row">
-          <div class="slds-form__item" role="listitem">
-            <div class="slds-form-element slds-form-element_stacked">
-              <label class="slds-form-element__label" for="due-date">Due Date</label>
-              <div class="slds-form-element__control">
-                <input type="date" id="due-date" class="slds-input" formControlName="dueDate"/>
-              </div>
-            </div>
-          </div>
-          <div class="slds-form__item" role="listitem">
-            <div class="slds-form-element slds-form-element_stacked">
-              <label class="slds-form-element__label" for="priority">
-                <abbr class="slds-required" title="required">* </abbr>Priority
-              </label>
-              <div class="slds-form-element__control">
-                <div class="slds-select_container">
-                  <select class="slds-select" id="priority" formControlName="priority">
-                    <option value="Low">Low</option>
-                    <option value="Normal">Normal</option>
-                    <option value="High">High</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="slds-form__row">
-          <div class="slds-form__item" role="listitem" style="width: 100%;">
-            <div class="slds-form-element slds-form-element_stacked">
-              <label class="slds-form-element__label" for="description">Description</label>
-              <div class="slds-form-element__control">
-                <textarea id="description" class="slds-textarea" rows="5" formControlName="comments"></textarea>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
       </form>
     </div>
     <footer class="slds-modal__footer">
-      <button class="slds-button slds-button_neutral" (click)="onClose()" style="background-color: #f4e6a8; border-color: #f4e6a8;">Cancel</button>
-      <button class="slds-button slds-button_brand" (click)="onSave()" style="background-color: #54698d; border-color: #54698d;">Save</button>
+      <button class="slds-button slds-button_neutral" (click)="onClose()"
+        style="background-color: #f4e6a8; border-color: #f4e6a8;">Cancel</button>
+      <button class="slds-button slds-button_brand" (click)="onSave()"
+        style="background-color: #54698d; border-color: #54698d;">Save</button>
     </footer>
   </div>
 </section>

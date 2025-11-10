@@ -3,25 +3,26 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ITask } from '../task-list/task-list.component';
 import { TaskService } from '../service/task.service';
 import { HttpClient } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-add-task',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './add-task.component.html',
   styleUrl: './add-task.component.scss',
-    providers: [TaskService, HttpClient],
+  providers: [TaskService, HttpClient],
 })
 export class AddTaskComponent {
   @Input() task: ITask | null = null;
- @Output() close = new EventEmitter<void>();
+  @Output() close = new EventEmitter<void>();
   @Output() save = new EventEmitter<ITask>();
 
   taskForm!: FormGroup;
 
   constructor(
     private fb: FormBuilder,
-  private taskService: TaskService) {
+    private taskService: TaskService) {
 
   }
 
@@ -47,11 +48,11 @@ export class AddTaskComponent {
     this.close.emit();
   }
 
-   onSave() {
-    if (this.taskForm.invalid) {
-      this.taskForm.markAllAsTouched();
-      return;
-    }
+  onSave() {
+ if (this.taskForm.invalid) {
+  this.taskForm.markAllAsTouched();
+  return;
+}
 
     const formValue = this.taskForm.value as ITask;
 
