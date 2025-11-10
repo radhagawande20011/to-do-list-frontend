@@ -5,11 +5,11 @@
         <div class="slds-page-header__col-title">
           <div class="slds-media">
             <div class="slds-media__figure">
-              <span class="slds-icon_container slds-icon-standard-task" style="background-color: #c23934;">
-                <svg class="slds-icon slds-page-header__icon" aria-hidden="true">
-                  <use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#task"></use>
-                </svg>
-              </span>
+           <span class="slds-icon_container" 
+      style="background-color: #c23934; padding: 6px; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center;">
+  <i class="ti ti-checklist" style="color: white; font-size: 18px;"></i>
+</span>
+
             </div>
             <div class="slds-media__body">
               <div class="slds-page-header__name">
@@ -40,9 +40,8 @@
         <div class="slds-page-header__col-details">
           <div class="slds-form-element">
             <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
-              <!-- <svg class="slds-icon slds-input__icon slds-input__icon_right slds-icon-text-default" aria-hidden="true">
-                <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#search"></use>
-              </svg> -->
+            <i class="ti ti-search slds-input__icon slds-input__icon_right" style="font-size: 18px; color:#706e6b;"></i>
+
               <input type="text" class="slds-input" placeholder="Search" [(ngModel)]="searchTerm"
                 (keyup.enter)="onSearch()" style="max-width: 300px;" />
             </div>
@@ -118,9 +117,8 @@
                 [class.slds-is-open]="actionMenuTaskId === task.id">
                 <button class="slds-button slds-button_icon slds-button_icon-border-filled"
                   (click)="toggleActionMenu(task.id!)" aria-haspopup="true">
-                  <!-- <svg class="slds-button__icon" aria-hidden="true">
-                    <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#down"></use>
-                  </svg> -->
+                <i class="ti ti-dots-vertical slds-button__icon" style="font-size: 18px;"></i>
+
                 </button>
                 <div class="slds-dropdown slds-dropdown_right" *ngIf="actionMenuTaskId === task.id"
                   style="background-color: #f4e6a8;">
