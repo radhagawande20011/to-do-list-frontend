@@ -44,3 +44,28 @@
   position: relative;
 }
 
+.search-input {
+  max-width: 300px;
+}
+
+.search-icon {
+  font-size: 18px;
+  color: #706e6b;
+}
+
+.clear-search-btn {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 18px;
+  color: #706e6b;
+  padding: 0;
+}
+
+.clear-search-btn:hover {
+  color: #000;
+}
