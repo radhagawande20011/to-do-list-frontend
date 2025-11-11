@@ -10,13 +10,14 @@ import { Component } from '@angular/core';
 export class ToastComponent {
   visible = false;
   message = '';
+  theme: 'success' | 'error' = 'success';
 
-  show(msg: string) {
-    this.message = msg;
+  show(message: string, type: 'success' | 'error' = 'success') {
+    this.message = message;
+    this.theme = type;
     this.visible = true;
 
-    setTimeout(() => {
-      this.visible = false;
-    }, 3000);
+    setTimeout(() => this.visible = false, 3000);
   }
+
 }

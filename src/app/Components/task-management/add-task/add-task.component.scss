@@ -1,3 +1,11 @@
+.custom-modal-width {
+  max-width: 40rem;
+}
+
+.custom-close-icon {
+  font-size: 20px;
+}
+
 .slds-form__row {
   display: flex;
   gap: 1rem;
@@ -6,4 +14,14 @@
 
 .slds-form__item {
   flex: 1;
+}
+
+.custom-cancel-btn {
+  background-color: #f4e6a8 !important;
+  border-color: #f4e6a8 !important;
+}
+
+.custom-save-btn {
+  background-color: #54698d !important;
+  border-color: #54698d !important;
 }

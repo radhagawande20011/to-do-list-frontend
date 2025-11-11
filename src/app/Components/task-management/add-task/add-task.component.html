@@ -1,16 +1,21 @@
 <section role="dialog" class="slds-modal slds-fade-in-open">
-  <div class="slds-modal__container" style="max-width: 40rem;">
+  <div class="slds-modal__container custom-modal-width">
+
     <header class="slds-modal__header">
       <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" (click)="onClose()">
-        <i class="ti ti-x slds-button__icon slds-button__icon_large" style="font-size: 20px;"></i>
-
+        <i class="ti ti-x slds-button__icon slds-button__icon_large custom-close-icon"></i>
       </button>
-      <h2 class="slds-modal__title slds-hyphenate">{{ task?.id ? 'Update Task' : 'New Task' }}</h2>
 
+      <h2 class="slds-modal__title slds-hyphenate">
+        {{ task?.id ? 'Update Task' : 'New Task' }}
+      </h2>
     </header>
+
     <div class="slds-modal__content slds-p-around_medium">
       <form [formGroup]="taskForm">
         <div class="slds-form" role="list">
+
+          <!-- Assigned To -->
           <div class="slds-form__row">
             <div class="slds-form__item" role="listitem">
               <div class="slds-form-element slds-form-element_stacked">
@@ -25,9 +30,9 @@
                   *ngIf="taskForm.get('assignedTo')?.invalid && taskForm.get('assignedTo')?.touched">
                   Assigned To is required
                 </div>
-
               </div>
             </div>
+
             <div class="slds-form__item" role="listitem">
               <div class="slds-form-element slds-form-element_stacked">
                 <label class="slds-form-element__label" for="status">
@@ -42,14 +47,16 @@
                     </select>
                   </div>
                 </div>
+
                 <div class="slds-form-element__help slds-text-color_error"
                   *ngIf="taskForm.get('status')?.invalid && taskForm.get('status')?.touched">
                   Status is required
                 </div>
-
               </div>
             </div>
           </div>
+
+          <!-- Due Date -->
           <div class="slds-form__row">
             <div class="slds-form__item" role="listitem">
               <div class="slds-form-element slds-form-element_stacked">
@@ -59,6 +66,8 @@
                 </div>
               </div>
             </div>
+
+            <!-- Priority -->
             <div class="slds-form__item" role="listitem">
               <div class="slds-form-element slds-form-element_stacked">
                 <label class="slds-form-element__label" for="priority">
@@ -77,12 +86,13 @@
                   *ngIf="taskForm.get('priority')?.invalid && taskForm.get('priority')?.touched">
                   Priority is required
                 </div>
-
               </div>
             </div>
           </div>
+
+          <!-- Description -->
           <div class="slds-form__row">
-            <div class="slds-form__item" role="listitem" style="width: 100%;">
+            <div class="slds-form__item slds-size_1-of-1" role="listitem">
               <div class="slds-form-element slds-form-element_stacked">
                 <label class="slds-form-element__label" for="description">Description</label>
                 <div class="slds-form-element__control">
@@ -91,17 +101,20 @@
               </div>
             </div>
           </div>
+
         </div>
       </form>
     </div>
+
     <footer class="slds-modal__footer">
-      <button class="slds-button slds-button_neutral" (click)="onClose()"
-        style="background-color: #f4e6a8; border-color: #f4e6a8;">Cancel</button>
-      <button class="slds-button slds-button_brand" (click)="onSave()"
-        style="background-color: #54698d; border-color: #54698d;">Save</button>
+      <button class="slds-button slds-button_neutral custom-cancel-btn" (click)="onClose()">
+        Cancel
+      </button>
+
+      <button class="slds-button slds-button_brand custom-save-btn" (click)="onSave()">
+         {{ task?.id ? 'Update' : 'Save' }}
+      </button>
     </footer>
+
   </div>
 </section>
-
-<app-toast #toast></app-toast>
-

@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { BehaviorSubject, from, map, Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { TASKS_API } from 'src/app/theme/shared/constant/service-api.contant';
 import { environment } from 'src/environments/environment';
 import { ITask } from '../model/task.model';
@@ -10,7 +9,6 @@ import { ITask } from '../model/task.model';
   providedIn: 'root'
 })
 export class TaskService {
-  private supabase: SupabaseClient;
 
   constructor(
     private http: HttpClient
@@ -37,8 +35,8 @@ export class TaskService {
     return this.http.put(`${environment.BASE_URL}${TASKS_API.TASK_BY_ID}${id}`, task);
   }
 
-  deleteTask(id: string, task: ITask): Observable<any> {
-    return this.http.put(`${environment.BASE_URL}${TASKS_API.TASK_BY_ID}${id}`, task);
+  deleteTask(id: string): Observable<any> {
+    return this.http.delete(`${environment.BASE_URL}${TASKS_API.TASK_BY_ID}${id}`);
   }
 
 }
