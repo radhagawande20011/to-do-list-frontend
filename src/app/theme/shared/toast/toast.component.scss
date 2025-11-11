@@ -4,3 +4,23 @@
   right: 10px;
   z-index: 9999;
 }
+
+.toast-message-content {
+  display: flex;
+  align-items: center;
+  gap: 8px; 
+}
+
+.success-icon {
+  color: #4bca81;
+  font-size: 18px;
+}
+
+.error-icon {
+  color: #c23934; 
+  font-size: 18px;
+}
+
+.toast-message-text {
+  white-space: nowrap;
+}
