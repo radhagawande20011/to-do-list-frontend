@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TaskService } from '../service/task.service'
 import { AddTaskComponent } from '../add-task/add-task.component';
@@ -18,21 +18,26 @@ import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
   providers: [TaskService, HttpClient],
 })
 export class TaskListComponent {
+
+  // region variables
   tasks: ITask[] = [];
   totalCount: number = 0;
   totalPages: number = 0;
   searchTerm: string = '';
-  pageSizeOptions: number[] = [10, 20, 50, 100];
+  pageSizeOptions: number[] = [5, 10, 20, 50,];
   pageSize: number = 10;
   currentPage: number = 1;
   showAddModal: boolean = false;
   showEditModal: boolean = false;
   selectedTask: ITask | null = null;
+  showDeleteModal = false;
   isLoading: boolean = false;
   actionMenuTaskId: string | null = null;
+  @Output() notify = new EventEmitter<string>();
+
   @ViewChild(ToastComponent) toast!: ToastComponent;
 
-
+  //#region common methods
   constructor(private taskService: TaskService) { }
 
   ngOnInit() {
@@ -62,19 +67,20 @@ export class TaskListComponent {
       }
     });
   }
+
   onSearch() {
     if (this.searchTerm.length >= 2 || this.searchTerm.length === 0) {
       this.currentPage = 1;
       this.getAllTasks();
     }
   }
-
   clearSearch() {
     this.searchTerm = '';
     this.currentPage = 1;
     this.getAllTasks();
   }
 
+  //#region pagination
   goToFirstPage() {
     this.currentPage = 1;
     this.getAllTasks();
@@ -106,9 +112,12 @@ export class TaskListComponent {
 
   refresh() {
     this.searchTerm = '';
+    this.currentPage = 1;
+    this.pageSize = 10;
     this.getAllTasks();
   }
 
+  //#region add form
   openAddTaskModal() {
     this.selectedTask = null;
     this.showAddModal = true;
@@ -130,19 +139,41 @@ export class TaskListComponent {
     this.selectedTask = null;
   }
 
-    toggleActionMenu(taskId: string) {
+  toggleActionMenu(taskId: string) {
     this.actionMenuTaskId = this.actionMenuTaskId === taskId ? null : taskId;
   }
 
-
-  deleteTask(taskId: string) {
-    if (!confirm('Are you sure you want to delete this task?')) {
-      return;
-    }
-    this.actionMenuTaskId = null;
-    this.getAllTasks();
+  //#region delete
+  openDeleteModal(task: ITask) {
+    this.selectedTask = task;
+    this.showDeleteModal = true;
   }
 
+  closeDeleteModal() {
+    this.showDeleteModal = false;
+    this.selectedTask = null;
+  }
+
+  confirmDelete() {
+    if (!this.selectedTask?.id) return;
+
+    this.taskService.deleteTask(this.selectedTask.id)
+      .subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.toast.show(res.message || 'Task deleted successfully');
+
+            this.showDeleteModal = false;
+            this.getAllTasks();
+          } else {
+            this.toast.show('Something went wrong while deleting');
+          }
+        },
+        error: (err) => {
+          this.toast.show(err.error?.message || 'Failed to delete task');
+        }
+      });
+  }
 }
 export { ITask };
 
