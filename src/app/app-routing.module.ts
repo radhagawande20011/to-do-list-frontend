@@ -13,11 +13,11 @@ const routes: Routes = [
         redirectTo: '/tasks',
         pathMatch: 'full'
       },
-      // {
-      //   path: 'default',
-      //   loadComponent: () => import('./demo/dashboard/default/default.component').then((c) => c.DefaultComponent)
-      // },
-      { path: 'tasks', loadChildren: () => import('./Components/task-management/tasks.module').then(m => m.TasksModule) },
+      {
+        path: 'tasks',
+        loadComponent: () => import('./Components/task-management/task-list/task-list.component').then((c) => c.TaskListComponent)
+      },
+      // { path: 'tasks', loadChildren: () => import('./Components/task-management/tasks.module').then(m => m.TasksModule) },
     ]
   },
   {
